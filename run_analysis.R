@@ -1,4 +1,4 @@
-library(dplyr)
+
 
 #Create directory and download data for project
 if(!file.exists("./GCProject")){dir.create("./GCProject")}
@@ -26,7 +26,7 @@ meanSTD_tidy = gsub('-std', 'Std', meanSTD_tidy)
 meanSTD_tidy <- gsub('[-()]', '', meanSTD_tidy)
 
 
-# Load the datasets
+# Load the datasets and merge datasets
 x_train <- read.table("UCI HAR Dataset/train/X_train.txt")[meanSTD_Features]
 trainLabels <- read.table("UCI HAR Dataset/train/Y_train.txt")
 TrainSubjects <- read.table("UCI HAR Dataset/train/subject_train.txt")
@@ -37,11 +37,11 @@ testLabels <- read.table("UCI HAR Dataset/test/Y_test.txt")
 testSubjects <- read.table("UCI HAR Dataset/test/subject_test.txt")
 test <- cbind(testSubjects, testLabels, x_test)
 
-# merge datasets and add labels
 dataSet <- rbind(train, test)
+
+#add labels and adjust measurements
 colnames(dataSet) <- c("subject", "activity", meanSTD_tidy)
-View(dataSet)
-# turn activities & subjects into factors
+
 dataSet$activity <- factor(dataSet$activity, levels = activityLabels[,1], labels = activityLabels[,2])
 dataSet$subject <- as.factor(dataSet$subject)
 
